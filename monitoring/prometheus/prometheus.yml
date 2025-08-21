@@ -1,0 +1,58 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+rule_files:
+  - 'rules/*.yml'
+
+scrape_configs:
+  # BFF Application Metrics
+  - job_name: 'bff'
+    static_configs:
+      - targets: ['bff:9090']
+    scrape_interval: 10s
+    metrics_path: '/metrics'
+    scrape_timeout: 10s
+
+  # Node.js Application Metrics
+  - job_name: 'bff-app'
+    static_configs:
+      - targets: ['bff:3000']
+    metrics_path: '/metrics'
+    scrape_interval: 15s
+
+  # PostgreSQL Metrics (if postgres_exporter is configured)
+  - job_name: 'postgres'
+    static_configs:
+      - targets: ['postgres:9187']
+    scrape_interval: 30s
+
+  # Redis Metrics (if redis_exporter is configured)
+  - job_name: 'redis'
+    static_configs:
+      - targets: ['redis:9121']
+    scrape_interval: 30s
+
+  # NGINX Metrics (if nginx_exporter is configured)
+  - job_name: 'nginx'
+    static_configs:
+      - targets: ['nginx:9113']
+    scrape_interval: 30s
+
+  # Keycloak Metrics (if available)
+  - job_name: 'keycloak'
+    static_configs:
+      - targets: ['keycloak:8080']
+    metrics_path: '/auth/realms/master/metrics'
+    scrape_interval: 30s
+
+  # Prometheus itself
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets:
+          # - alertmanager:9093
