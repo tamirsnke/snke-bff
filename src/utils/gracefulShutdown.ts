@@ -25,14 +25,14 @@ export function gracefulShutdown(server: Server): void {
 
   // Handle uncaught exceptions
   process.on('uncaughtException', async (error) => {
-    logger.error('Uncaught Exception:', error);
+    console.error('Uncaught Exception:', error);
     await shutdown(server, 'uncaughtException');
     process.exit(1);
   });
 
   // Handle unhandled promise rejections
   process.on('unhandledRejection', async (reason, promise) => {
-    logger.error('Unhandled Rejection at:', promise, 'reason:', reason);
+    console.error('Unhandled Rejection at:', promise, 'reason:', reason);
     await shutdown(server, 'unhandledRejection');
     process.exit(1);
   });
@@ -40,13 +40,13 @@ export function gracefulShutdown(server: Server): void {
 
 async function shutdown(server: Server, reason: string): Promise<void> {
   const startTime = Date.now();
-  logger.info(`Shutdown initiated due to: ${reason}`);
+  console.info(`Shutdown initiated due to: ${reason}`);
 
   try {
     // Stop accepting new connections
     server.close((err) => {
       if (err) {
-        logger.error('Error closing server:', err);
+        console.error('Error closing server:', err);
       } else {
         logger.info('HTTP server closed');
       }

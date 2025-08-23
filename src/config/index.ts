@@ -16,6 +16,14 @@ const configSchema = Joi.object({
   SSL_CERT_PATH: Joi.string().default('./certs/server-cert.pem'),
   SSL_CA_PATH: Joi.string().default('./certs/ca-cert.pem'),
 
+  // Quentry Configuration
+  QUENTRY_BASE_URL: Joi.string().default('http://localhost:8000'),
+  QUENTRY_API_URL: Joi.string().default('http://localhost:8000/api'),
+  QUENTRY_AUTH_ENDPOINT: Joi.string().default('http://localhost:8000/api/r8/sessions'),
+  QUENTRY_COOKIES: Joi.string().allow(''),
+  QUENTRY_SERVICE_USERNAME: Joi.string().allow(''),
+  QUENTRY_SERVICE_PASSWORD: Joi.string().allow(''),
+
   // Database Configuration
   DATABASE_URL: Joi.string().required(),
   DATABASE_SSL: Joi.boolean().default(false),
@@ -95,6 +103,15 @@ export const config = {
   isProduction: envVars.NODE_ENV === 'production',
   isStaging: envVars.NODE_ENV === 'staging',
 
+  quentry: {
+    baseUrl: envVars.QUENTRY_BASE_URL,
+    apiUrl: envVars.QUENTRY_API_URL,
+    authEndpoint: envVars.QUENTRY_AUTH_ENDPOINT,
+    cookies: envVars.QUENTRY_COOKIES,
+    serviceUsername: envVars.QUENTRY_SERVICE_USERNAME,
+    servicePassword: envVars.QUENTRY_SERVICE_PASSWORD,
+  },
+
   server: {
     host: envVars.SERVER_HOST,
     port: envVars.SERVER_PORT,
@@ -119,6 +136,7 @@ export const config = {
     url: envVars.REDIS_URL,
     password: envVars.REDIS_PASSWORD,
     tls: envVars.REDIS_TLS,
+    enabled: envVars.SESSION_STORE === 'redis',
   },
 
   session: {

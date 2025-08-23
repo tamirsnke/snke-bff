@@ -3,7 +3,7 @@ import { Server } from 'http';
 import { config } from '@/config';
 import { initializeMonitoring } from '@/config/monitoring';
 import { initializeDatabase } from '@/config/database';
-import { initializeRedis } from '@/config/redis';
+import { initializeRedis, getRedis } from '@/config/redis';
 import { initializeKeycloak } from '@/config/keycloak';
 import { setupMiddleware } from '@/middleware';
 import { setupRoutes } from '@/routes';
@@ -40,7 +40,12 @@ class Application {
       // Initialize Redis (graceful failure)
       try {
         await initializeRedis();
-        console.log('🔴 Redis initialized');
+        const redisInstance = getRedis();
+        if (redisInstance.isConnected && redisInstance.client) {
+          console.log('🔴 Redis initialized and connected');
+        } else {
+          console.log('Redis not available, using memory session store');
+        }
       } catch (error) {
         console.warn(
           '⚠️  Redis initialization failed, using memory session store:',

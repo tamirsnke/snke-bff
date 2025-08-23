@@ -16,6 +16,7 @@ import authRoutes from '@/routes/auth';
 import userRoutes from '@/routes/users';
 import adminRoutes from '@/routes/admin';
 import proxyRoutes from '@/routes/proxy';
+import quentryRoutes from '@/routes/quentry';
 
 export function setupRoutes(app: express.Application): void {
   // Health check endpoint
@@ -49,6 +50,9 @@ export function setupRoutes(app: express.Application): void {
 
   // Authentication routes
   app.use('/auth', authRoutes);
+
+  // Quentry routes
+  app.use('/quentry', quentryRoutes);
 
   // API routes
   app.use('/api/users', userRoutes);
@@ -105,7 +109,7 @@ async function detailedHealthCheck(req: Request, res: Response): Promise<void> {
   // Redis health check
   try {
     const redis = getRedis();
-    if (redis.isConnected) {
+    if (redis.isConnected && redis.client) {
       await redis.client.ping();
       checks.redis = {
         status: 'ok',
